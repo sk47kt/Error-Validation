@@ -33,7 +33,6 @@ public class ItemValidator implements Validator {
             if (resultPrice < 10000) {
                 errors.reject("totalPriceMin",new Object[]{10000,resultPrice},null);
             }
-
         }
 
     }
