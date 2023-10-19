@@ -11,20 +11,22 @@ import javax.validation.constraints.NotNull;
 //@ScriptAssert(lang= "javascript" , script = "_this.price * _this.quantity >= 10000",message = "총 합이 10000원을 넘게 입력해주세요")
 public class Item {
 
+    @NotNull(groups = UpdateCheck.class)
     private Long id;
 
-    @NotBlank(message="공백X")
+    @NotBlank(groups = {UpdateCheck.class, SaveCheck.class})
     private String itemName;
 
-    @NotNull
-    @Range(min=1000,max=1000000)
+    @NotNull(groups = {UpdateCheck.class, SaveCheck.class})
+    @Range(min=1000,max=1000000,groups = {UpdateCheck.class, SaveCheck.class})
     private Integer price;
 
-    @NotNull
-    @Range(max = 9999)
+    @NotNull(groups = {UpdateCheck.class, SaveCheck.class})
+    //@Range(max = 9999)
     private Integer quantity;
 
     public Item() {
+
     }
 
     public Item(String itemName, Integer price, Integer quantity) {

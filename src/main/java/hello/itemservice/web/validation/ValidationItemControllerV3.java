@@ -2,6 +2,8 @@ package hello.itemservice.web.validation;
 
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
+import hello.itemservice.domain.item.SaveCheck;
+import hello.itemservice.domain.item.UpdateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -41,9 +43,26 @@ public class ValidationItemControllerV3 {
         return "validation/v3/addForm";
     }
 
-    @PostMapping("/add")
+    /*@PostMapping("/add")
     public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes , Model model) {
-        resultprice(item, bindingResult); // resultprice가 10000원이상이 아니면 global object error
+        resultprice(item, bindingResult);
+
+        if (bindingResult.hasErrors()) { // 검증실패시 다시 입력폼으로 되돌아감
+            log.info("errors = {}",bindingResult);
+            return "validation/v3/addForm";
+        }
+
+
+        //검증 완료 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v3/items/{itemId}";
+    }*/
+
+    @PostMapping("/add")
+    public String addItem2(@Validated(SaveCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes , Model model) {
+        resultprice(item, bindingResult);
 
         if (bindingResult.hasErrors()) { // 검증실패시 다시 입력폼으로 되돌아감
             log.info("errors = {}",bindingResult);
@@ -57,6 +76,7 @@ public class ValidationItemControllerV3 {
         return "redirect:/validation/v3/items/{itemId}";
     }
 
+    // resultprice가 10000원이상이 아니면 global object errorr
     private static void resultprice(Item item, BindingResult bindingResult) {
         if (item.getPrice() != null && item.getQuantity() != null) {
             int resultPrice = item.getPrice() * item.getQuantity();
@@ -73,9 +93,22 @@ public class ValidationItemControllerV3 {
         return "validation/v3/editForm";
     }
 
-    @PostMapping("/{itemId}/edit")
+    /*@PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId,@Validated @ModelAttribute Item item,BindingResult bindingResult) {
-        resultprice(item, bindingResult); // resultprice가 10000원이상이 아니면 global object error
+        resultprice(item, bindingResult);
+        
+        if (bindingResult.hasErrors()) { // 검증실패시 다시 입력폼으로 되돌아감
+            log.info("errors = {}",bindingResult);
+            return "validation/v3/editForm";
+        }
+
+        itemRepository.update(itemId, item);
+        return "redirect:/validation/v3/items/{itemId}";
+    }*/
+
+    @PostMapping("/{itemId}/edit")
+    public String edit(@PathVariable Long itemId, @Validated(UpdateCheck.class) @ModelAttribute Item item, BindingResult bindingResult) {
+        resultprice(item, bindingResult);
 
         if (bindingResult.hasErrors()) { // 검증실패시 다시 입력폼으로 되돌아감
             log.info("errors = {}",bindingResult);
